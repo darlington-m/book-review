@@ -1,4 +1,4 @@
-book-review
+Book Review
 ===========
 
-A Symfony project created on November 11, 2016, 12:18 pm.
+A Symfony application for managing book reviews.
