@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %} Bookish{% endblock %} - Book Reviews</title>
+    {% block stylesheets %}
+        {% stylesheets
+        '../app/Resources/public/css/style.css'
+        '../app/Resources/public/css/pace.css'
+        '../app/Resources/public/css/animate.css'
+        'https://fonts.googleapis.com/css?family=Raleway:400,700' %}
+        <link href="{{ asset_url }} " type="text/css" rel="stylesheet"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        {% endstylesheets %}
+    {% endblock %}
+    {% block javascript %}
+        {% javascripts
+        'https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js'
+        'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'
+        '../app/Resources/public/js/main.js'
+        '../app/Resources/public/js/pace.js' %}
+        <script type="text/javascript" src="{{ asset_url }} "></script>
+        {% endjavascripts %}
+    {% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }} "/>
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <button type="button" class="navbar-toggle collapsed"
+                data-toggle="collapse"
+                data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="{{ path('book_homepage') }}">
+            <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+            Bookish Reviews
+        </a>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <p class="navbar-btn">
+                        <a href="{{ path('book_create') }}" style="margin-right: 15px" class="btn btn-primary animated bounceIn">
+                            <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+                            Add Book
+                        </a>
+                    </p>
+                </li>
+                {% if app.user %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            {{ app.user.username }}
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="text-center"><a href="{{ path('review_view_all') }}">My Reviews</a></li>
+                            <li class="text-center"><a href="{{ path('book_view_all') }}">My Books</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li class="text-center"><a href="{{ path('fos_user_profile_show') }}">My Profile</a></li>
+                            <li class="text-center"><a href="{{ path('fos_user_profile_edit') }}">Edit Profile</a></li>
+                            <li class="text-center"><a href="{{ path('fos_user_change_password') }}">Change Password</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li class="text-center"><a href="{{ path('fos_user_security_logout') }}">Logout</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li><a href="{{ path('fos_user_registration_register') }}">Register</a></li>
+                    <li><a href="{{ path('fos_user_security_login') }}">Login</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid wrapper" style="padding-top: 50px">
+
+    <div class="">
+        <section class="well content col-md-9">
+            {% block body %}
+                {% block fos_user_content %}
+                {% endblock fos_user_content %}
+            {% endblock %}
+        </section>
+        <section style="padding: 0 !important;" class="sidebar col-md-3">
+            {% block sidebar %}
+                <!--div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" width="560" height="315" src="https://www.youtube.com/embed/TIOXvbFbcq4" frameborder="0" allowfullscreen></iframe>
+                </div-->
+
+                <form method="get" action="{{ path('book_search') }}">
+                    <div class="input-group">
+                        <input name="term" type="text" class="form-control" placeholder="Search by Author, Title, Category or ISBN">
+                        <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
+                    </span>
+                    </div>
+                </form>
+
+                {{ render(controller(
+                'BookReviewReviewBundle:Review:recentReviews',
+                { 'max': 6 }
+                )) }}
+
+                {{ render(controller(
+                    'BookReviewReviewBundle:Book:topRated',
+                    { 'max': 6 }
+                )) }}
+
+            {% endblock %}
+        </section>
+    </div>
+</div>
+<div class="footer">
+    {% block footer %}
+        <p>Bookish Reviews&copy; {{ "now"|date("Y") }}</p>
+    {% endblock %}
+</div>
+
+</body>
+</html>

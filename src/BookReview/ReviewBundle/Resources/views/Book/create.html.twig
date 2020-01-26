@@ -1,0 +1,159 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Bookish - Add book{% endblock %}
+
+{% block body %}
+
+    <div class="col-md-12 marginT30">
+        <h2>Add a Book</h2>
+
+        {% if error is defined %}
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                We could not find details of the book this time. Try using a different ISBN version or add the
+                book manually <a href="{{ path('book_create_manual') }}">HERE</a>
+            </div>
+        {% elseif book is defined %}
+            <div class="alert alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                Looks like the book is already in our database. If its not the one you want to add
+                try adding it manually <a href="{{ path('book_create_manual') }}">HERE</a>
+            </div>
+
+            <hr>
+            <div class="media">
+                <div class="media-left media-top">
+                    <a href="#">
+                        <img class="media-object" style="width:75px;height:100px;" src="{% if book.manualEntry == 0 %}{{ book.thumbnail }}{% else %}{{ asset('uploads/images/' ~ book.thumbnail) }}{% endif %}"  alt="{{ book.title }}">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">
+                        <a href="{{ path('book_view', {id:book.id}) }}">
+                            {{ book.title }}
+                            {% if book.subtitle != "" %}: {{ book.subtitle }}{% endif %}
+                        </a>
+                    </h4>
+                    <p>Author: {{ book.authors }}</p>
+                    <p>Publisher: {{ book.publisher }}</p>
+                </div>
+            </div>
+            <hr>
+
+        {% elseif googleBooks is defined %}
+
+            <hr>
+            <table class="table table-bordered" style="border-radius: 5px">
+
+
+                <tbody>
+                    <tr>
+                        <th>
+                            <h3>Results for {{ term }} search</h3>
+                        </th>
+                    </tr>
+
+                    {% if googleBooks is empty %}
+                        <tr>
+                            <td>
+                                No books found
+                            </td>
+                        </tr>
+
+                    {% else %}
+
+                        {% for gbook in googleBooks %}
+                            <tr {% if loop.index is odd %}style="background: #f4f4f4"{% endif %}>
+                                <td>
+                                    <div class="media">
+                                        <div class="media-left media-top">
+                                            <a href="#">
+                                                <img class="media-object" style="width:75px;height:100px;" src="{% if gbook.volumeInfo.imageLinks is defined %}{{ gbook.volumeInfo.imageLinks.thumbnail }}{% endif %}"  alt="{{ gbook.volumeInfo.title }}" />
+                                            </a>
+                                        </div>
+                                        <div class="media-body">
+                                            <h4 class="media-heading">
+                                                <a href="">
+                                                    {{ gbook.volumeInfo.title }}
+                                                    {% if gbook.volumeInfo.subtitle is defined %}: {{ gbook.volumeInfo.title }}{% endif %}
+                                                </a>
+                                            </h4>
+                                            <p>Author: {% if gbook.volumeInfo.authors is defined %}{{ gbook.volumeInfo.authors|join(', ') }}{% endif %}</p>
+
+                                            {% if gbook.volumeInfo.industryIdentifiers[1] is defined %}
+                                                <a type="submit" href="{{ path('book_create_google', {isbn:gbook.volumeInfo.industryIdentifiers[1].identifier}) }}" class="btn-primary btn btn-sm">
+                                                    Add Book
+                                                </a>
+                                            {% elseif gbook.volumeInfo.industryIdentifiers[0] is defined %}
+                                                <a type="submit" href="{{ path('book_create_google', {isbn:gbook.volumeInfo.industryIdentifiers[0].identifier}) }}" class="btn-primary btn btn-sm">
+                                                    Add Book
+                                                </a>
+                                            {% endif %}
+
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+
+        {% else %}
+
+            <div>
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist" id="myTabs">
+                    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Add By ISBN</a></li>
+                    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Add By Title</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="home">
+                        <div class="well col-md-6" style="margin-top: 30px">
+                            <div class="alert alert-success alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                To add a book, simply enter the book's ISBN and we will take care of all the little detail.
+                            </div>
+
+                            {{ form(form) }}
+                        </div>
+                    </div>
+
+
+                    <div role="tabpanel" class="tab-pane" id="profile">
+                        <div class="well col-md-6" style="margin-top: 30px">
+                            <div class="alert alert-success alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                Alternatively, simply enter the book's title and we will search for it.
+                            </div>
+
+                            <form action="{{ path('book_create') }}" method="post">
+                                <div class="form-group">
+                                    <label class="control-label required" for="google_search_term">Book Title</label>
+                                    <input type="text" name="google_search_term" class="form-control" placeholder="Book title">
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn-primary btn">
+                                        Search for Book
+                                    </button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+        {% endif %}
+
+
+    </div>
+
+{% endblock %}

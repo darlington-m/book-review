@@ -1,0 +1,86 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Bookish - {{ book.title }}{% endblock %}
+
+{% block body %}
+
+    <div style="background-color: #ffffff; padding: 10px; border-radius: 5px;" class="media">
+        <div class="media-left media-top">
+            <a href="#">
+                <img class="media-object" src="{% if book.manualEntry == 0 %}{{ book.thumbnail }}{% else %}{{ asset('uploads/images/' ~ book.thumbnail) }}{% endif %}" alt="...">
+            </a>
+        </div>
+        <div class="media-body">
+            <h4 class="media-heading">{{ book.title }} {% if book.subtitle != "" %}: {{ book.subtitle }}{% endif %}</h4>
+            <p>
+                {% if reviews is not empty %}
+                        {% if avg != 0 %}
+                            {% for i in 1..avg %}
+                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                            {% endfor %}
+                        {% endif %}
+
+                        {% if avg != 10 %}
+                            {% for i in 1..10-avg %}
+                                <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
+                            {% endfor %}
+                        {% endif %}
+                {% endif %}
+            </p>
+            <p>By: {{ book.authors }}</p>
+            <p>Publisher: {{ book.publisher }}</p>
+            <p>Publish Date: {{ book.publishDate | date('H:i d/m/y') }}</p>
+            <p>ISBN: {{ book.isbn10 }}(10) {{ book.isbn13 }}(13)</p>
+            <p>Page Count: {{ book.pageCount }}
+            <p>Type: {{ book.printType }}</p>
+            <p>Categories: {{ book.categories }}</p>
+            <p>Description: {{ book.description }}</p>
+        </div>
+    </div>
+
+    <hr>
+
+    <a href="{{ path('review_create', {id:book.id}) }}">
+        <button class="btn btn-primary">
+            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+            Write Review
+        </button>
+    </a>
+    {% if app.user != null and app.user.granted("USER_ADMIN") %}
+    <a href="{{ path('book_delete', {id:book.id}) }}">
+        <button class="btn btn-danger delete_book">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            Delete Book
+        </button>
+    </a>
+    {% endif %}
+
+    <hr>
+
+    <h4>Reviews ({{ reviews.count() }})</h4>
+
+    {% for review in reviews %}
+
+        <div class="well">
+            <h4><a href="{{ path('review_view', {id:review.id}) }}">{{ review.title }}</a></h4>
+            <p class="small">Written by {{ review.getReviewer() }} on {{ review.timestamp | date('d/m/y') }} at {{ review.timestamp | date('H:i') }}</p>
+            <p>{{ review.body }}</p>
+            <p>Rating:
+                {% if review.rating != 0 %}
+                    {% for i in 1..review.rating %}
+                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                    {% endfor %}
+                {% endif %}
+
+                {% if review.rating != 10 %}
+                    {% for i in 1..10-review.rating %}
+                        <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
+                    {% endfor %}
+                {% endif %}
+            </p>
+        </div>
+
+
+    {% endfor %}
+
+{% endblock %}

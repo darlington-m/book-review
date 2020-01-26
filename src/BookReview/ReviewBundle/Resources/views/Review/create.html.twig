@@ -1,0 +1,33 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Bookish - Write review{% endblock %}
+
+{% block body %}
+
+    <div style="background-color: #ffffff; border-radius: 5px; padding: 10px;" class="media">
+        <div class="media-left media-top">
+            <a href="#">
+                <img class="media-object" src="{% if book.manualEntry == 0 %}{{ book.thumbnail }}{% else %}{{ asset('uploads/images/' ~ book.thumbnail) }}{% endif %}" alt="...">
+            </a>
+        </div>
+        <div class="media-body">
+            <h4 class="media-heading">{{ book.title }} {% if book.subtitle != "" %}: {{ book.subtitle }}{% endif %}</h4>
+            <p>By: {{ book.authors }}</p>
+            <p>Publisher: {{ book.publisher }}</p>
+            <p>Publish Date: {{ book.publishDate | date('H:i d/m/y') }}</p>
+            <p>ISBN: {{ book.isbn10 }}(10) {{ book.isbn13 }}(13)</p>
+            <p>Categories: {{ book.categories }}</p>
+        </div>
+    </div>
+    <hr>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Write Review</h3>
+        </div>
+        <div class="panel-body">
+            {{ form(form) }}
+        </div>
+    </div>
+
+{% endblock %}

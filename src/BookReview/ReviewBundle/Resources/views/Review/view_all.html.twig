@@ -1,0 +1,52 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Bookish - Reviews by {{ app.user.username }}{% endblock %}
+
+{% block body %}
+
+    <h4>{{ pagination.getTotalItemCount }} reviews written by {{ app.user.username }}</h4>
+
+    <hr>
+
+    {% if pagination.getTotalItemCount != 0 %}
+
+        Sort By:
+        <span {% if pagination.isSorted('a.id') %} class="label label-primary sort-label"{% else %} class="label label-default sort-label"{% endif %}>{{ knp_pagination_sortable(pagination, 'Date Added', 'a.id') }}</span>
+        <span style="margin-right: 10px"></span>
+        <span {% if pagination.isSorted('a.title') %} class="label label-primary sort-label"{% else %} class="label label-default sort-label"{% endif %}>{{ knp_pagination_sortable(pagination, 'Title', 'a.title') }}</span>
+        <span style="margin-right: 10px"></span>
+        <span {% if pagination.isSorted('a.rating') %} class="label label-primary sort-label"{% else %} class="label label-default sort-label"{% endif %}>{{ knp_pagination_sortable(pagination, 'Rating', 'a.rating') }}</span>
+    {% endif %}
+
+    <hr>
+
+    {% for review in pagination %}
+
+        <div class="well">
+            <h4><a href="{{ path('review_view', {id:review.id}) }}">{{ review.title }}</a></h4>
+            <p class="small">Written by {{ review.getReviewer() }} on {{ review.timestamp | date('d/m/y') }} at {{ review.timestamp | date('H:i') }}</p>
+            <p>{{ review.body }}</p>
+            <p>Rating:
+                {% if review.rating != 0 %}
+                    {% for i in 1..review.rating %}
+                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                    {% endfor %}
+                {% endif %}
+
+                {% if review.rating != 10 %}
+                    {% for i in 1..10-review.rating %}
+                        <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
+                    {% endfor %}
+                {% endif %}
+            </p>
+        </div>
+
+
+    {% endfor %}
+
+    {# display navigation #}
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+
+{% endblock %}

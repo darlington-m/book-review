@@ -1,0 +1,8 @@
+services:
+#    book_review_review.example:
+#        class: BookReview\ReviewBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
+    book_details:
+        class: BookReview\ReviewBundle\Helpers\BookDetails
+    google_books_search:
+        class: BookReview\ReviewBundle\Helpers\GoogleBooksSearch

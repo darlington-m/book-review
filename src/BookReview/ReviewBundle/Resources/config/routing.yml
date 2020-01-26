@@ -1,0 +1,67 @@
+book_homepage:
+    path:     /
+    defaults: { _controller: BookReviewReviewBundle:Default:index }
+
+book_create:
+    path:     /books/create
+    defaults: { _controller: BookReviewReviewBundle:Book:create }
+
+book_create_google:
+    path:     /books/create/{isbn}
+    defaults: { _controller: BookReviewReviewBundle:Book:createGoogle }
+
+book_create_manual:
+    path:     /books/create_manual
+    defaults: { _controller: BookReviewReviewBundle:Book:createManual }
+
+book_view:
+    path:     /books/{id}
+    defaults: { _controller: BookReviewReviewBundle:Book:view }
+    requirements: { id: \d+ }
+
+book_edit:
+    path:     /books/edit/{id}
+    defaults: { _controller: BookReviewReviewBundle:Book:edit }
+    requirements: { id: \d+ }
+
+book_delete:
+    path:     /books/delete/{id}
+    defaults: { _controller: BookReviewReviewBundle:Book:delete }
+    requirements: { id: \d+ }
+
+book_search:
+    path:     /books/search
+    defaults: { _controller: BookReviewReviewBundle:Book:search }
+
+book_search_google_books:
+    path:     /books/search_google_books
+    defaults: { _controller: BookReviewReviewBundle:Book:search_google }
+
+book_view_all:
+    path:     /books
+    defaults: { _controller: BookReviewReviewBundle:Book:viewAll }
+
+review_view_all:
+    path:     /reviews
+    defaults: { _controller: BookReviewReviewBundle:Review:viewAll }
+
+review_view:
+    path:     /reviews/{id}
+    defaults: { _controller: BookReviewReviewBundle:Review:view }
+    requirements: { id: \d+ }
+
+review_create:
+    path:     /reviews/create/book/{id}
+    defaults: { _controller: BookReviewReviewBundle:Review:create }
+    requirements: { id: \d+ }
+
+review_edit:
+    path:     /reviews/edit/{id}
+    defaults: { _controller: BookReviewReviewBundle:Review:edit }
+    requirements: { id: \d+ }
+
+review_delete:
+    path:     /reviews/delete/{id}
+    defaults: { _controller: BookReviewReviewBundle:Review:delete }
+    requirements: { id: \d+ }
+

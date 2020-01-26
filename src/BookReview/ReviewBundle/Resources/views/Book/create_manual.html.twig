@@ -1,0 +1,53 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Bookish - Add Book{% endblock %}
+
+{% block body %}
+
+    <div class="well col-md-6 col-md-offset-3 marginT30">
+        <h2>Add a Book</h2>
+
+        {% if error is defined %}
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                We could not find details of the book this time. Try using a different ISBN version or add the
+                book manually <a href="">HERE</a>
+            </div>
+        {% elseif book is defined %}
+            <div class="alert alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                Looks like the book is already in our database. If its not the one you want to add
+                leave us a message and we will look at the issue
+            </div>
+
+            <hr>
+            <div class="media">
+                <div class="media-left media-top">
+                    <a href="#">
+                        <img class="media-object" style="width:75px;height:100px;" src="{% if book.manualEntry == 0 %}{{ book.thumbnail }}{% else %}{{ asset('uploads/images/' ~ book.thumbnail) }}{% endif %}" alt="{{ book.title }}">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">
+                        <a href="{{ path('book_view', {id:book.id}) }}">
+                            {{ book.title }}
+                            {% if book.subtitle != "" %}: {{ book.subtitle }}{% endif %}
+                        </a>
+                    </h4>
+                    <p>Author: {{ book.authors }}</p>
+                    <p>Publisher: {{ book.publisher }}</p>
+                </div>
+            </div>
+            <hr>
+        {% else %}
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                Books added manually will need a moderator to ... before they are added to the website.
+                If you know the book's ISBN number, try adding it <a href="{{ path('book_create') }}">HERE</a>
+            </div>
+        {% endif %}
+
+        {{ form(form) }}
+    </div>
+
+{% endblock %}

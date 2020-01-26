@@ -1,0 +1,18 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+
+    <h3>Recently Added</h3>
+    <div class="row">
+    {% for book in books %}
+            <div class="col-sm-3 col-md-2">
+                <div class="thumbnail" data-toggle="tooltip" data-placement="top" title="{{ book.title }}">
+                    <a href="{{ path('book_view', { id:book.id }) }}"><img class="wow animated bounceIn" style="width: 100% !important; min-height:150px;height:150px;" src="{% if book.manualEntry == 0 %}{{ book.thumbnail }}{% else %}{{ asset('uploads/images/' ~ book.thumbnail) }}{% endif %}" class="img-responsive" alt="{{ book.title }}"></a>
+                </div>
+            </div>
+    {% endfor %}
+    </div>
+
+    <hr>
+
+{% endblock %}

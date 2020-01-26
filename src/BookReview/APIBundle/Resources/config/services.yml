@@ -1,0 +1,4 @@
+services:
+#    book_review_api.example:
+#        class: BookReview\APIBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]

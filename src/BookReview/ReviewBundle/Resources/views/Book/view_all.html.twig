@@ -1,0 +1,63 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Books added by {{ app.user.username }}{% endblock %}
+
+{% block body %}
+
+    <h3>{{ pagination.getTotalItemCount }} books added by {{ app.user.username }}</h3>
+
+    <hr>
+    <table class="table table-bordered" style="border-radius: 5px">
+
+
+        <tbody>
+        {% if pagination.getTotalItemCount != 0 %}
+            <tr>
+                <th>
+                    Sort By:
+                    <span {% if pagination.isSorted('a.id') %} class="label label-primary sort-label"{% else %} class="label label-default sort-label"{% endif %}>{{ knp_pagination_sortable(pagination, 'Date Added', 'a.id') }}</span>
+                    <span style="margin-right: 10px"></span>
+                    <span {% if pagination.isSorted('a.title') %} class="label label-primary sort-label"{% else %} class="label label-default sort-label"{% endif %}>{{ knp_pagination_sortable(pagination, 'Title', 'a.title') }}</span>
+                    <span style="margin-right: 10px"></span>
+                    <span {% if pagination.isSorted('a.authors') %} class="label label-primary sort-label"{% else %} class="label label-default sort-label"{% endif %}>{{ knp_pagination_sortable(pagination, 'Author', 'a.authors') }}</span>
+                    <span style="margin-right: 10px"></span>
+                    <span {% if pagination.isSorted('a.publisher') %} class="label label-primary sort-label"{% else %} class="label label-default sort-label"{% endif %}>{{ knp_pagination_sortable(pagination, 'Publisher', 'a.publisher') }}</span>
+                    <span style="margin-right: 10px"></span>
+                    <span {% if pagination.isSorted('a.categories') %} class="label label-primary sort-label"{% else %} class="label label-default sort-label"{% endif %}>{{ knp_pagination_sortable(pagination, 'Category', 'a.categories') }}</span>
+                </th>
+            </tr>
+        {% endif %}
+
+        {% for book in pagination %}
+            <tr {% if loop.index is odd %}style="background: #f4f4f4"{% endif %}>
+                <td>
+                    <div class="media">
+                        <div class="media-left media-top">
+                            <a href="#">
+                                <img class="media-object" style="width:75px;height:100px;" src="{% if book.manualEntry == 0 %}{{ book.thumbnail }}{% else %}{{ asset('uploads/images/' ~ book.thumbnail) }}{% endif %}" alt="{{ book.title }}">
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">
+                                <a href="{{ path('book_view', {id:book.id}) }}">
+                                    {{ book.title }}
+                                    {% if book.subtitle != "" %}: {{ book.subtitle }}{% endif %}
+                                </a>
+                            </h4>
+                            <p>Author: {{ book.authors }}</p>
+                            <p>Publisher: {{ book.publisher }}</p>
+                            <p>Category: {{ book.categories }}</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {# display navigation #}
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+
+{% endblock %}
